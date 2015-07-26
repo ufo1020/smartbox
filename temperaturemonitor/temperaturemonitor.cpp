@@ -10,7 +10,7 @@ TemperatureMonitor::TemperatureMonitor()
     mSensor = new TemperatureSensor();
     mSwitch = new PowerSwitchDriver();
 
-    connect(mTimer, SIGNAL(timeout()), this, SLOT(updateTemperature()));
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(checkTemperature()));
 }
 
 TemperatureMonitor::~TemperatureMonitor()
@@ -20,9 +20,13 @@ TemperatureMonitor::~TemperatureMonitor()
     delete mSwitch;
 }
 
-bool TemperatureMonitor::GetTemperature_C(float &temp)
+void TemperatureMonitor::getTemperature_C()
 {
-    return mSensor->GetTemperature_C(temp);
+    float temp;
+
+    if (mSensor->GetTemperature_C(temp)) {
+        emit updateTemperature(temp);
+    }
 }
 
 void TemperatureMonitor::updateTargetTemperature(int temp)
@@ -40,7 +44,7 @@ void TemperatureMonitor::updateTargetTemperature(int temp)
 
     // check new target and current temperature are not too close
     float tempReading;
-    bool ok = GetTemperature_C(tempReading);
+    bool ok = mSensor->GetTemperature_C(tempReading);
     int currentTemp = static_cast<int>(tempReading);
     if (!ok || abs(currentTemp - temp) < MIN_DELTA_TEMPERATURE) {
         return;
@@ -55,10 +59,10 @@ void TemperatureMonitor::updateTargetTemperature(int temp)
     }
 }
 
-void TemperatureMonitor::updateTemperature()
+void TemperatureMonitor::checkTemperature()
 {
     float currentTemp;
-    if (GetTemperature_C(currentTemp)) {
+    if (mSensor->GetTemperature_C(currentTemp)) {
         if (static_cast<int>(currentTemp) - mTargetTemperature
                 > MIN_DELTA_TEMPERATURE ) {
             // temperature reached, stop ramping

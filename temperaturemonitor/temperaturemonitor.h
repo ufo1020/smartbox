@@ -15,14 +15,17 @@ public:
     TemperatureMonitor();
     ~TemperatureMonitor();
 
-    bool GetTemperature_C(float& temp);
     bool IsValidTemperature_C(float temp);
 
 public slots:
+    void getTemperature_C();
     void updateTargetTemperature(int temp);
 
 private slots:
-    void updateTemperature();
+    void checkTemperature();
+
+signals:
+    void updateTemperature(float temp);
 
 private:
     void startRamping();

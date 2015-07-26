@@ -15,6 +15,11 @@ MainController::MainController()
     connect(mHttpServer, SIGNAL(postRequest(int)), this, SLOT(heandlePostRequest(int)));
 
     // monitor thread events
+    connect(mTempMonitor, SIGNAL(updateTemperature(float)), this,
+            SLOT(updateTemperature(float)));
+    connect(this, &MainController::getTemperature, mTempMonitor,
+            &TemperatureMonitor::getTemperature_C);
+
     connect(this, &MainController::updateTargetTemperature, mTempMonitor,
             &TemperatureMonitor::updateTargetTemperature);
     connect(&mMoniorThread, &QThread::finished, mTempMonitor, &QObject::deleteLater);
@@ -30,14 +35,12 @@ MainController::~MainController()
 
 void MainController::handleGetRequest()
 {
-    float temp;
-    bool ok = mTempMonitor->GetTemperature_C(temp);
-    if (ok) {
-        mHttpServer->SendGetResponse(QString::number(temp));
-    } else {
-        mHttpServer->SendGetResponse(QString(INVALID_TEMPERATURE));
-       qDebug()<<"Cannot get temp, temp reading wrong";
-    }
+    emit getTemperature();
+}
+
+void MainController::updateTemperature(float temp)
+{
+    mHttpServer->SendGetResponse(QString::number(temp));
 }
 
 void MainController::heandlePostRequest(int temp)

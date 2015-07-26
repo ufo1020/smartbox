@@ -17,9 +17,11 @@ public:
     ~MainController();
 
 signals:
+    void getTemperature();
     void updateTargetTemperature(int temp);
 
 private slots:
+    void updateTemperature(float temp);
     void handleGetRequest();
     void heandlePostRequest(int temp);
 
