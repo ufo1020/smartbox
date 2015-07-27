@@ -9,7 +9,7 @@ QT       += core network
 QT       -= gui
 
 TARGET = TemperatureMonitor
-CONFIG   += console
+CONFIG   += console debug_and_release
 CONFIG   -= app_bundle
 
 TEMPLATE = app
@@ -48,3 +48,4 @@ CONFIG += c++11
 
 #CFLAGS += -Wno-write-strings
 CONFIG += warn_off
+
