@@ -12,7 +12,7 @@ public:
     bool GetTemperature_C(float& temp);
 
 private:
-    float voltageToTemperature(int voltage_mv);
+    float voltageToTemperature(int rawAdc);
 
     // refer to:
     // https://learn.adafruit.com/tmp36-temperature-sensor/overview
@@ -20,9 +20,11 @@ private:
     constexpr static int MIN_OUTPUT_VOLTAGE_MV = 0;
     constexpr static float OUTPUT_VOLTAGE_OFFSET = 500.0f;
     constexpr static float OUTPUT_VOLTAGE_DIVIDER = 10.0f;
+    constexpr static int MAX_RAW_VALUE_OUTPUT = 4096;
+    constexpr static int MIN_RAW_VALUE_OUTPUT = 0;
 
-    constexpr static char* ADC_INPUT_PIN = "AIN1";
-    constexpr static char* ADC_FILE_PATH = "/sys/devices/ocp.3/helper.15/";
+    constexpr static char* ADC_INPUT_PIN = "in_voltage1_raw";
+    constexpr static char* ADC_FILE_PATH = "/sys/bus/iio/devices/iio:device0/";
 
     QFile* mAdcFile = nullptr;
 };

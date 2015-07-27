@@ -16,30 +16,36 @@ TMP36Driver::~TMP36Driver()
 
 bool TMP36Driver::GetTemperature_C(float& temp)
 {
-    QByteArray raw = mAdcFile->readLine();
+    int rawAdc = 0;
 
-    if (raw.size() == 0) {
+    // input is an integer, only read an integer in
+    QByteArray input = mAdcFile->read(sizeof(rawAdc));
+
+    if (input.size() == 0) {
         return false;
     }
 
     bool ok;
 
-    int voltage = raw.toInt(&ok);
+    rawAdc = input.toInt(&ok);
 
     if (!ok) {
         return false;
     }
 
-    if (voltage > MAX_OUTPUT_VOLTAGE_MV || voltage < MIN_OUTPUT_VOLTAGE_MV) {
+    if (rawAdc > MAX_RAW_VALUE_OUTPUT || rawAdc < MIN_RAW_VALUE_OUTPUT) {
         return false;
     }
 
-    temp = voltageToTemperature(voltage);
+    temp = voltageToTemperature(rawAdc);
 
     return true;
 }
 
-float TMP36Driver::voltageToTemperature(int voltage_mv)
+float TMP36Driver::voltageToTemperature(int rawAdc)
 {
+    // input x = [0, 4096], equal to voltage(mv) [0, 1800]
+    float voltage_mv = (static_cast<float>(rawAdc) / static_cast<float>(MAX_RAW_VALUE_OUTPUT))
+                      * static_cast<float>(MAX_OUTPUT_VOLTAGE_MV);
     return (voltage_mv - OUTPUT_VOLTAGE_OFFSET) / OUTPUT_VOLTAGE_DIVIDER;
 }
