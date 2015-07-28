@@ -40,7 +40,9 @@ void MainController::handleGetRequest()
 
 void MainController::updateTemperature(float temp)
 {
-    mHttpServer->SendGetResponse(QString::number(temp));
+    char format = 'f'; //format as 9.9
+    int precision = 1;
+    mHttpServer->SendGetResponse(QString::number(temp, format, precision));
 }
 
 void MainController::heandlePostRequest(int temp)

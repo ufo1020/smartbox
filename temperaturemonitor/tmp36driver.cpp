@@ -5,12 +5,10 @@ TMP36Driver::TMP36Driver()
 {
     mAdcFile = new QFile(QString(ADC_FILE_PATH) + QString(ADC_INPUT_PIN));
     Q_ASSERT(mAdcFile->exists());
-    Q_ASSERT(mAdcFile->open(QIODevice::ReadOnly | QIODevice::Text));
 }
 
 TMP36Driver::~TMP36Driver()
 {
-    mAdcFile->close();
     delete mAdcFile;
 }
 
@@ -19,7 +17,9 @@ bool TMP36Driver::GetTemperature_C(float& temp)
     int rawAdc = 0;
 
     // input is an integer, only read an integer in
+    Q_ASSERT(mAdcFile->open(QIODevice::ReadOnly | QIODevice::Text));
     QByteArray input = mAdcFile->read(sizeof(rawAdc));
+    mAdcFile->close();
 
     if (input.size() == 0) {
         return false;
