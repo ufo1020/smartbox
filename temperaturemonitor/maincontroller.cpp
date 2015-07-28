@@ -5,8 +5,8 @@
 
 MainController::MainController()
 {
-    HttpService* mHttpServer = new HttpService();
-    TemperatureMonitor* mTempMonitor = new TemperatureMonitor();
+    mHttpServer = new HttpService();
+    mTempMonitor = new TemperatureMonitor();
 
     mTempMonitor->moveToThread(&mMoniorThread);
 
