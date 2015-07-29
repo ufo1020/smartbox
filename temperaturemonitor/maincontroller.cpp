@@ -17,21 +17,18 @@ MainController::MainController()
     connect(mHttpServer, SIGNAL(postRequest(int)), this, SLOT(heandlePostRequest(int)));
 
     // monitor thread events
-    connect(this, SIGNAL(&MainController::getTemperature), mTempMonitor,
-            SLOT(&TemperatureMonitor::getTemperature));
-    connect(mTempMonitor, SIGNAL(getTemperatureResult(float)), this,
-            SLOT(getTemperatureResult(float)));
+    connect(this, SIGNAL(getTemperature()), mTempMonitor, SLOT(getTemperature()));
+    connect(mTempMonitor, SIGNAL(getTemperatureResult(float)), this, SLOT(getTemperatureResult(float)));
 
 
-    connect(this, SIGNAL(&MainController::setTemperature), mTempMonitor,
-            SLOT(&TemperatureMonitor::setTemperature));
+    connect(this, SIGNAL(setTemperature(int)), mTempMonitor, SLOT(setTemperature(int)));
 
-    connect(&mMoniorThread, SIGNAL(&QThread::finished), mTempMonitor, SLOT(&QObject::deleteLater));
+    connect(&mMoniorThread, SIGNAL(finished()), mTempMonitor, SLOT(deleteLater()));
     mMoniorThread.start();
 
 
     // checking temperature every x seconds
-    connect(mTimer, SIGNAL(timeout()), this, SLOT(&TemperatureMonitor::updateTemperature()));
+    connect(mTimer, SIGNAL(timeout()), mTempMonitor, SLOT(updateTemperature()));
     mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
 
 }
