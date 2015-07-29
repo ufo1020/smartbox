@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-class QTimer;
 class TemperatureSensor;
 class PowerSwitchDriver;
 
@@ -20,23 +19,19 @@ public:
 public slots:
     void getTemperature();
     void setTemperature(int temp);
-
-private slots:
-    void checkTemperature();
+    void updateTemperature();
 
 signals:
-    void updateTemperature(float temp);
+    void getTemperatureResult(float temp);
 
 private:
     void startRamping();
     void stopRamping();
 
-    // timeout 60s
-    constexpr static int TEMPERATURE_UPDATE_TIMEOUT_MS = 60000;
+
     constexpr static int MIN_DELTA_TEMPERATURE = 2;
     int mTargetTemperature = 0;
 
-    QTimer* mTimer;
     TemperatureSensor* mSensor;
     PowerSwitchDriver* mSwitch;
 };

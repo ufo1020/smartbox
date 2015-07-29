@@ -2,11 +2,13 @@
 #include "httpservice.h"
 #include "temperaturemonitor.h"
 #include <QDebug>
+#include <QTimer>
 
 MainController::MainController()
 {
     mHttpServer = new HttpService();
     mTempMonitor = new TemperatureMonitor();
+    mTimer = new QTimer();
 
     mTempMonitor->moveToThread(&mMoniorThread);
 
@@ -15,21 +17,33 @@ MainController::MainController()
     connect(mHttpServer, SIGNAL(postRequest(int)), this, SLOT(heandlePostRequest(int)));
 
     // monitor thread events
-    connect(mTempMonitor, SIGNAL(updateTemperature(float)), this,
-            SLOT(updateTemperature(float)));
-    connect(this, &MainController::getTemperature, mTempMonitor,
-            &TemperatureMonitor::getTemperature);
+    connect(this, SIGNAL(&MainController::getTemperature), mTempMonitor,
+            SLOT(&TemperatureMonitor::getTemperature));
+    connect(mTempMonitor, SIGNAL(getTemperatureResult(float)), this,
+            SLOT(getTemperatureResult(float)));
 
-    connect(this, &MainController::setTemperature, mTempMonitor,
-            &TemperatureMonitor::setTemperature);
-    connect(&mMoniorThread, &QThread::finished, mTempMonitor, &QObject::deleteLater);
+
+    connect(this, SIGNAL(&MainController::setTemperature), mTempMonitor,
+            SLOT(&TemperatureMonitor::setTemperature));
+
+    connect(&mMoniorThread, SIGNAL(&QThread::finished), mTempMonitor, SLOT(&QObject::deleteLater));
     mMoniorThread.start();
+
+
+    // checking temperature every x seconds
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(&TemperatureMonitor::updateTemperature()));
+    mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
+
 }
 
 MainController::~MainController()
 {
     mMoniorThread.quit();
     delete mHttpServer;
+    if (mTimer->isActive()) {
+        mTimer->stop();
+    }
+    delete mTimer;
     delete mTempMonitor;
 }
 
@@ -38,7 +52,7 @@ void MainController::handleGetRequest()
     emit getTemperature();
 }
 
-void MainController::updateTemperature(float temp)
+void MainController::getTemperatureResult(float temp)
 {
     char format = 'f'; //format as 9.9
     int precision = 1;

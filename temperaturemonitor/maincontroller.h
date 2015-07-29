@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QThread>
 
+class QTimer;
 class HttpService;
 class TemperatureMonitor;
 
@@ -20,16 +21,21 @@ signals:
     void setTemperature(int temp);
 
 private slots:
-    void updateTemperature(float temp);
+    void getTemperatureResult(float temp);
     void handleGetRequest();
     void heandlePostRequest(int temp);
 
 private:
+    void startUpdateTemperature();
+
+    // timeout 60s
+    constexpr static int TEMPERATURE_UPDATE_TIMEOUT_MS = 60000;
     constexpr static char* INVALID_TEMPERATURE = "FF";
 
     QThread mMoniorThread; // thread running temperature monitor
     HttpService* mHttpServer = nullptr;
     TemperatureMonitor* mTempMonitor = nullptr;
+    QTimer* mTimer;
 };
 
 #endif // MAINCONTROLLER_H

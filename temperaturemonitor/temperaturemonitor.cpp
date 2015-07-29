@@ -2,22 +2,18 @@
 #include "temperaturesensor.h"
 #include "powerswitchdriver.h"
 
-#include <QTimer>
 #include <QDebug>
 
 TemperatureMonitor::TemperatureMonitor()
 {
-    mTimer = new QTimer();
+
     mSensor = new TemperatureSensor();
     mSwitch = new PowerSwitchDriver();
 
-    connect(mTimer, SIGNAL(timeout()), this, SLOT(checkTemperature()));
-    mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
 }
 
 TemperatureMonitor::~TemperatureMonitor()
 {
-    delete mTimer;
     delete mSensor;
     delete mSwitch;
 }
@@ -27,7 +23,7 @@ void TemperatureMonitor::getTemperature()
     float temp;
 
     if (mSensor->getTemperature_C(temp)) {
-        emit updateTemperature(temp);
+        emit getTemperatureResult(temp);
     }
 }
 
@@ -61,7 +57,7 @@ void TemperatureMonitor::setTemperature(int temp)
     }
 }
 
-void TemperatureMonitor::checkTemperature()
+void TemperatureMonitor::updateTemperature()
 {
     float currentTemp;
     if (mSensor->getTemperature_C(currentTemp)) {
@@ -72,17 +68,12 @@ void TemperatureMonitor::checkTemperature()
             return;
         }
     }
-
-    // temperature not reached, start timer later
-    mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
 }
 
 void TemperatureMonitor::startRamping()
 {
     qDebug() << "Turn on power";
     mSwitch->switchOnPower();
-
-    mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
 }
 
 void TemperatureMonitor::stopRamping()
