@@ -24,15 +24,15 @@ void TemperatureMonitor::getTemperature_C()
 {
     float temp;
 
-    if (mSensor->GetTemperature_C(temp)) {
+    if (mSensor->getTemperature_C(temp)) {
         emit updateTemperature(temp);
     }
 }
 
-void TemperatureMonitor::updateTargetTemperature(int temp)
+void TemperatureMonitor::setTemperature(int temp)
 {
     // check new target is valid
-    if (!mSensor->IsValidTemperature_C(static_cast<float>(temp)))
+    if (!mSensor->isValidTemperature_C(static_cast<float>(temp)))
     {
         return;
     }
@@ -44,7 +44,7 @@ void TemperatureMonitor::updateTargetTemperature(int temp)
 
     // check new target and current temperature are not too close
     float tempReading;
-    bool ok = mSensor->GetTemperature_C(tempReading);
+    bool ok = mSensor->getTemperature_C(tempReading);
     int currentTemp = static_cast<int>(tempReading);
     if (!ok || abs(currentTemp - temp) < MIN_DELTA_TEMPERATURE) {
         return;
@@ -62,11 +62,11 @@ void TemperatureMonitor::updateTargetTemperature(int temp)
 void TemperatureMonitor::checkTemperature()
 {
     float currentTemp;
-    if (mSensor->GetTemperature_C(currentTemp)) {
+    if (mSensor->getTemperature_C(currentTemp)) {
         if (static_cast<int>(currentTemp) - mTargetTemperature
                 > MIN_DELTA_TEMPERATURE ) {
             // temperature reached, stop ramping
-            mSwitch->SwitchOffPower();
+            mSwitch->switchOffPower();
             return;
         }
     }
@@ -77,7 +77,7 @@ void TemperatureMonitor::checkTemperature()
 
 void TemperatureMonitor::startRamping()
 {
-    mSwitch->SwitchOnPower();
+    mSwitch->switchOnPower();
 
     mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
 }
@@ -85,6 +85,6 @@ void TemperatureMonitor::startRamping()
 void TemperatureMonitor::stopRamping()
 {
     // just turn it off, no state checking needed
-    mSwitch->SwitchOffPower();
+    mSwitch->switchOffPower();
 }
 

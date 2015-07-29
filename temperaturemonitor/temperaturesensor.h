@@ -11,9 +11,9 @@ public:
     TemperatureSensor();
     ~TemperatureSensor();
 
-    bool GetTemperature_C(float& temp);
+    bool getTemperature_C(float& temp);
     bool IsSensorFaulty();
-    bool IsValidTemperature_C(float temp);
+    bool isValidTemperature_C(float temp);
 
 private:
     const static int SENSOR_FAULTY_LIMIT = 3;

@@ -5,7 +5,6 @@
 #include <QThread>
 
 class HttpService;
-//class TemperatureSensor;
 class TemperatureMonitor;
 
 class MainController : public QObject
@@ -18,7 +17,7 @@ public:
 
 signals:
     void getTemperature();
-    void updateTargetTemperature(int temp);
+    void setTemperature(int temp);
 
 private slots:
     void updateTemperature(float temp);

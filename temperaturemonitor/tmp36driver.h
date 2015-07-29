@@ -9,7 +9,7 @@ public:
     TMP36Driver();
     ~TMP36Driver();
 
-    bool GetTemperature_C(float& temp);
+    bool getTemperature_C(float& temp);
 
 private:
     float voltageToTemperature(int rawAdc);

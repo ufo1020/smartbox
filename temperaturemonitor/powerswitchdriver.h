@@ -9,9 +9,9 @@ public:
     PowerSwitchDriver();
     ~PowerSwitchDriver();
 
-    void SwitchOnPower();
-    void SwitchOffPower();
-    bool IsPowerOn();
+    void switchOnPower();
+    void switchOffPower();
+    bool isPowerOn();
 
 private:
     enum class GPIO_Direction_t
@@ -30,12 +30,12 @@ private:
         COUNT
     };
 
-    bool IsPowerSwitchEnabled();
+    bool isPowerSwitchEnabled();
 
-    void SwitchPower(GPIO_Value_t value);
+    void switchPower(GPIO_Value_t value);
 
-    GPIO_Direction_t GetDirection();
-    GPIO_Value_t GetValue();
+    GPIO_Direction_t getDirection();
+    GPIO_Value_t getValue();
 
     // use gpio pin 60
     constexpr static char* GPIO_FILE_PATH = "/sys/class/gpio/gpio60/";

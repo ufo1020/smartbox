@@ -8,7 +8,7 @@ QT       += core network
 
 QT       -= gui
 
-TARGET = TemperatureMonitor
+TARGET = temperatureMonitor
 CONFIG   += console debug_and_release
 CONFIG   -= app_bundle
 

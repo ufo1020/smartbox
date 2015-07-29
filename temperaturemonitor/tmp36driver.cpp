@@ -12,7 +12,7 @@ TMP36Driver::~TMP36Driver()
     delete mAdcFile;
 }
 
-bool TMP36Driver::GetTemperature_C(float& temp)
+bool TMP36Driver::getTemperature_C(float& temp)
 {
     int rawAdc = 0;
 
@@ -45,7 +45,8 @@ bool TMP36Driver::GetTemperature_C(float& temp)
 float TMP36Driver::voltageToTemperature(int rawAdc)
 {
     // input x = [0, 4096], equal to voltage(mv) [0, 1800]
-    float voltage_mv = (static_cast<float>(rawAdc) / static_cast<float>(MAX_RAW_VALUE_OUTPUT))
+    float voltage_mv = (static_cast<float>(rawAdc) /
+                        static_cast<float>(MAX_RAW_VALUE_OUTPUT))
                       * static_cast<float>(MAX_OUTPUT_VOLTAGE_MV);
     return (voltage_mv - OUTPUT_VOLTAGE_OFFSET) / OUTPUT_VOLTAGE_DIVIDER;
 }

@@ -18,10 +18,10 @@ MainController::MainController()
     connect(mTempMonitor, SIGNAL(updateTemperature(float)), this,
             SLOT(updateTemperature(float)));
     connect(this, &MainController::getTemperature, mTempMonitor,
-            &TemperatureMonitor::getTemperature_C);
+            &TemperatureMonitor::getTemperature);
 
-    connect(this, &MainController::updateTargetTemperature, mTempMonitor,
-            &TemperatureMonitor::updateTargetTemperature);
+    connect(this, &MainController::setTemperature, mTempMonitor,
+            &TemperatureMonitor::setTemperature);
     connect(&mMoniorThread, &QThread::finished, mTempMonitor, &QObject::deleteLater);
     mMoniorThread.start();
 }
@@ -47,5 +47,5 @@ void MainController::updateTemperature(float temp)
 
 void MainController::heandlePostRequest(int temp)
 {
-    emit updateTargetTemperature(temp);
+    emit setTemperature(temp);
 }

@@ -15,11 +15,11 @@ public:
     TemperatureMonitor();
     ~TemperatureMonitor();
 
-    bool IsValidTemperature_C(float temp);
+    bool isValidTemperature_C(float temp);
 
 public slots:
-    void getTemperature_C();
-    void updateTargetTemperature(int temp);
+    void getTemperature();
+    void setTemperature(int temp);
 
 private slots:
     void checkTemperature();

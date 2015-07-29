@@ -11,10 +11,10 @@ TemperatureSensor::~TemperatureSensor()
     delete mTmp36;
 }
 
-bool TemperatureSensor::GetTemperature_C(float& temp)
+bool TemperatureSensor::getTemperature_C(float& temp)
 {
 
-    if (!mTmp36->GetTemperature_C(temp)) {
+    if (!mTmp36->getTemperature_C(temp)) {
         mInvalidCounter++;
         temp = mLastValidTemperature_C;
         return false;
@@ -30,7 +30,7 @@ bool TemperatureSensor::IsSensorFaulty()
     return mInvalidCounter > SENSOR_FAULTY_LIMIT;
 }
 
-bool TemperatureSensor::IsValidTemperature_C(float temp)
+bool TemperatureSensor::isValidTemperature_C(float temp)
 {
     return temp <= MAX_TEMPERATURE && temp >= MIN_TEMPERATURE;
 }

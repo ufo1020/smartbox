@@ -67,7 +67,6 @@ void HttpService::SendPostResponse(QString resp)
     mResponse->setHeader("Content-Type", "text/html");
     mResponse->writeHead(200);
 
-//    QString temp = mPostExp->capturedTexts()[1];
     QString body = tr("<html><head><title>Post Temperature</title></head><body><h1>%1!</h1></body></html>");
     mResponse->end(body.arg(resp).toUtf8());
     qDebug()<<"post responst:"<<body;
