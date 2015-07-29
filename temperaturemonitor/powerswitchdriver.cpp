@@ -51,7 +51,7 @@ bool PowerSwitchDriver::isPowerSwitchEnabled()
 
 void PowerSwitchDriver::switchPower(GPIO_Value_t value)
 {
-    QTextStream out(mGpioValueFile, QIODevice::ReadWrite | QIODevice::Text);
+    QTextStream out(mGpioValueFile);
     out << static_cast<int>(value);
 }
 

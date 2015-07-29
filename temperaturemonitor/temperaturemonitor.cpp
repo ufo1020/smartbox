@@ -3,6 +3,7 @@
 #include "powerswitchdriver.h"
 
 #include <QTimer>
+#include <QDebug>
 
 TemperatureMonitor::TemperatureMonitor()
 {
@@ -11,6 +12,7 @@ TemperatureMonitor::TemperatureMonitor()
     mSwitch = new PowerSwitchDriver();
 
     connect(mTimer, SIGNAL(timeout()), this, SLOT(checkTemperature()));
+    mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
 }
 
 TemperatureMonitor::~TemperatureMonitor()
@@ -20,7 +22,7 @@ TemperatureMonitor::~TemperatureMonitor()
     delete mSwitch;
 }
 
-void TemperatureMonitor::getTemperature_C()
+void TemperatureMonitor::getTemperature()
 {
     float temp;
 
@@ -77,6 +79,7 @@ void TemperatureMonitor::checkTemperature()
 
 void TemperatureMonitor::startRamping()
 {
+    qDebug() << "Turn on power";
     mSwitch->switchOnPower();
 
     mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
@@ -84,6 +87,7 @@ void TemperatureMonitor::startRamping()
 
 void TemperatureMonitor::stopRamping()
 {
+    qDebug() << "Turn off power"; 
     // just turn it off, no state checking needed
     mSwitch->switchOffPower();
 }
