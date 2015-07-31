@@ -15,15 +15,10 @@ PowerSwitchDriver::PowerSwitchDriver()
     // /home/root/bin/init_beaglebone.sh should create those files on start up
     Q_ASSERT(mGpioValueFile->exists());
     Q_ASSERT(mGpioDirectionFile->exists());
-
-
-//    Q_ASSERT(mGpioDirectionFile->open(QIODevice::ReadOnly | QIODevice::Text));
 }
 
 PowerSwitchDriver::~PowerSwitchDriver()
 {
-//    mGpioDirectionFile->close();
-
     delete mGpioDirectionFile;
     delete mGpioValueFile;
 }
@@ -59,10 +54,6 @@ bool PowerSwitchDriver::isPowerSwitchEnabled()
 
 void PowerSwitchDriver::switchPower(GPIO_Value_t value)
 {
-//    Q_ASSERT(mGpioValueFile->open(QIODevice::WriteOnly | QIODevice::Truncate));
-//    QTextStream out(mGpioValueFile);
-//    out << static_cast<int>(value);
-//    mGpioValueFile->close();
     SmartBox::writeFile(mGpioValueFile, static_cast<int>(value));
 }
 
@@ -73,15 +64,8 @@ PowerSwitchDriver::GPIO_Direction_t PowerSwitchDriver::getDirection()
         return GPIO_Direction_t::UNKNOWN;
     }
 
-    rawString = rawString.trimmed();
-//    QByteArray raw = mGpioDirectionFile->readLine();
-//    mGpioDirectionFile->close();
+    rawString = rawString.trimmed(); // trimmed /n at the end
 
-//    if (raw.size() == 0) {
-//        return GPIO_Direction_t::UNKNOWN;
-//    }
-
-//    QString rawString = QString(raw.constData()).trimmed(); // trimmed /n at the end
     QString out(GPIO_DIRECTION_OUT);
     QString in(GPIO_DIRECTION_IN);
 
@@ -97,19 +81,6 @@ PowerSwitchDriver::GPIO_Direction_t PowerSwitchDriver::getDirection()
 
 PowerSwitchDriver::GPIO_Value_t PowerSwitchDriver::getValue()
 {
-//    // go to begining of the file
-//    mGpioValueFile->seek(0);
-
-//    // 0 or 1
-//    QByteArray raw = mGpioValueFile->read(sizeof(char));
-//    qDebug()<<raw;
-
-//    if (raw.size() == 0) {
-//        return GPIO_Value_t::UNKNOWN;
-//    }
-
-//    int rawValue = raw.toInt();
-
     int rawValue;
     if (!SmartBox::readFile(mGpioValueFile, rawValue)) {
         return GPIO_Value_t::UNKNOWN;

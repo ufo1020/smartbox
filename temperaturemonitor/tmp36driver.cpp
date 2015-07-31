@@ -6,12 +6,10 @@ TMP36Driver::TMP36Driver()
 {
     mAdcFile = new QFile(QString(ADC_FILE_PATH) + QString(ADC_INPUT_PIN));
     Q_ASSERT(mAdcFile->exists());
-//    Q_ASSERT(mAdcFile->open(QIODevice::ReadOnly | QIODevice::Text));
 }
 
 TMP36Driver::~TMP36Driver()
 {
-//    mAdcFile->close();
     delete mAdcFile;
 }
 

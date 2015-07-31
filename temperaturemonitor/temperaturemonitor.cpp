@@ -28,15 +28,9 @@ void TemperatureMonitor::getTemperature()
 void TemperatureMonitor::setTemperature(int temp)
 {
     // check new target is valid
-    if (!mSensor->isValidTemperature_C(static_cast<float>(temp)))
-    {
+    if (!mSensor->isValidTemperature_C(static_cast<float>(temp))) {
         return;
     }
-
-    // check if new target set before
-//    if (temp == mTargetTemperature) {
-//        return;
-//    }
 
     // check new target and current temperature are not too close
     int currentTemp = static_cast<int>(mCurrentTemperature);
@@ -51,6 +45,7 @@ void TemperatureMonitor::setTemperature(int temp)
     } else {
         startRamping();
     }
+    emit setTemperatureResult(temp);
 }
 
 void TemperatureMonitor::updateTemperature()
