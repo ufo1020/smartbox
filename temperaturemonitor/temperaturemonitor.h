@@ -31,6 +31,7 @@ private:
 
     constexpr static int MIN_DELTA_TEMPERATURE = 2;
     int mTargetTemperature = 0;
+    float mCurrentTemperature = 0.0f;
 
     TemperatureSensor* mSensor;
     PowerSwitchDriver* mSwitch;

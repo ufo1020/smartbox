@@ -32,6 +32,6 @@ bool TemperatureSensor::IsSensorFaulty()
 
 bool TemperatureSensor::isValidTemperature_C(float temp)
 {
-    return temp <= MAX_TEMPERATURE && temp >= MIN_TEMPERATURE;
+    return temp < MAX_TEMPERATURE && temp > MIN_TEMPERATURE;
 }
 

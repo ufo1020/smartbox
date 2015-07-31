@@ -20,10 +20,8 @@ TemperatureMonitor::~TemperatureMonitor()
 
 void TemperatureMonitor::getTemperature()
 {
-    float temp;
-
-    if (mSensor->getTemperature_C(temp)) {
-        emit getTemperatureResult(temp);
+    if (isValidTemperature_C(mCurrentTemperature)) {
+        emit getTemperatureResult(mCurrentTemperature);
     }
 }
 
@@ -36,15 +34,13 @@ void TemperatureMonitor::setTemperature(int temp)
     }
 
     // check if new target set before
-    if (temp == mTargetTemperature) {
-        return;
-    }
+//    if (temp == mTargetTemperature) {
+//        return;
+//    }
 
     // check new target and current temperature are not too close
-    float tempReading;
-    bool ok = mSensor->getTemperature_C(tempReading);
-    int currentTemp = static_cast<int>(tempReading);
-    if (!ok || abs(currentTemp - temp) < MIN_DELTA_TEMPERATURE) {
+    int currentTemp = static_cast<int>(mCurrentTemperature);
+    if (!isValidTemperature_C(mCurrentTemperature) || abs(currentTemp - temp) < MIN_DELTA_TEMPERATURE) {
         return;
     }
 
@@ -59,10 +55,9 @@ void TemperatureMonitor::setTemperature(int temp)
 
 void TemperatureMonitor::updateTemperature()
 {
-    float currentTemp;
-    if (mSensor->getTemperature_C(currentTemp)) {
-        if (static_cast<int>(currentTemp) - mTargetTemperature
-                > MIN_DELTA_TEMPERATURE ) {
+    if (mSensor->getTemperature_C(mCurrentTemperature)) {
+        if (mTargetTemperature &&
+            static_cast<int>(mCurrentTemperature) - mTargetTemperature > MIN_DELTA_TEMPERATURE ) {
             // temperature reached, stop ramping
             mSwitch->switchOffPower();
             return;
@@ -83,3 +78,7 @@ void TemperatureMonitor::stopRamping()
     mSwitch->switchOffPower();
 }
 
+bool TemperatureMonitor::isValidTemperature_C(float temp)
+{
+    mSensor->isValidTemperature_C(temp);
+}

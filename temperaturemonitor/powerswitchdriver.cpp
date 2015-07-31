@@ -3,6 +3,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QTextStream>
+#include <QDebug>
 
 PowerSwitchDriver::PowerSwitchDriver()
 {
@@ -69,6 +70,7 @@ PowerSwitchDriver::GPIO_Direction_t PowerSwitchDriver::getDirection()
     QString out(GPIO_DIRECTION_OUT);
     QString in(GPIO_DIRECTION_IN);
 
+    qDebug()<<"Reading is: "<<rawString;
     if (rawString == out) {
         return GPIO_Direction_t::OUT;
     } else if (rawString == in) {
