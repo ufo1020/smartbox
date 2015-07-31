@@ -23,7 +23,6 @@ public slots:
 
 signals:
     void getTemperatureResult(float temp);
-    void setTemperatureResult(int temp);
 
 private:
     void startRamping();

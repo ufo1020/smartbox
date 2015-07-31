@@ -22,7 +22,6 @@ signals:
 
 private slots:
     void getTemperatureResult(float temp);
-    void setTemperatureResult(int temp);
     void handleGetRequest();
     void heandlePostRequest(int temp);
 

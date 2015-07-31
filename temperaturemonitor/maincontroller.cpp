@@ -19,7 +19,6 @@ MainController::MainController()
     // monitor thread events
     connect(this, SIGNAL(getTemperature()), mTempMonitor, SLOT(getTemperature()));
     connect(mTempMonitor, SIGNAL(getTemperatureResult(float)), this, SLOT(getTemperatureResult(float)));
-    connect(mTempMonitor, SIGNAL(setTemperatureResult(int)), this, SLOT(setTemperatureResult(int)));
 
     connect(this, SIGNAL(setTemperature(int)), mTempMonitor, SLOT(setTemperature(int)));
 
@@ -59,12 +58,5 @@ void MainController::getTemperatureResult(float temp)
 void MainController::heandlePostRequest(int temp)
 {
     emit setTemperature(temp);
-}
-
-
-void MainController::setTemperatureResult(int temp)
-{
-    char format = 'f'; //format as 9.9
-    int precision = 1;
     mHttpServer->SendPostResponse(QString::number(temp));
 }

@@ -34,18 +34,20 @@ void TemperatureMonitor::setTemperature(int temp)
 
     // check new target and current temperature are not too close
     int currentTemp = static_cast<int>(mCurrentTemperature);
-    if (!isValidTemperature_C(mCurrentTemperature) || abs(currentTemp - temp) < MIN_DELTA_TEMPERATURE) {
+
+    if (!isValidTemperature_C(mCurrentTemperature)) {
+        return;
+    }
+
+    if (currentTemp > temp || abs(currentTemp - temp) < MIN_DELTA_TEMPERATURE) {
+        stopRamping();
         return;
     }
 
     mTargetTemperature = temp;
 
-    if (currentTemp >= mTargetTemperature) {
-        stopRamping();
-    } else {
-        startRamping();
-    }
-    emit setTemperatureResult(temp);
+    // target larger than current, start ramping
+    startRamping();
 }
 
 void TemperatureMonitor::updateTemperature()
