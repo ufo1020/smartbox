@@ -30,8 +30,8 @@ private slots:
 
 private:
     static constexpr int REG_EXP_NOT_MATCH = -1;
-    constexpr static char* GET_URI = "^/gettemp$";
-    constexpr static char* POST_URI = "^/posttemp/([0-9]{1,2})$";
+    constexpr static char* GET_URI = "^/get$";
+    constexpr static char* POST_URI = "^/set/([0-9]{1,2})$";
     QRegExp *mGetExp;
     QRegExp *mPostExp;
     QHttpServer *mServer;
