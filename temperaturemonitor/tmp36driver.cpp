@@ -1,37 +1,24 @@
 #include "tmp36driver.h"
+#include "utility.h"
 #include <QFile>
 
 TMP36Driver::TMP36Driver()
 {
     mAdcFile = new QFile(QString(ADC_FILE_PATH) + QString(ADC_INPUT_PIN));
     Q_ASSERT(mAdcFile->exists());
+//    Q_ASSERT(mAdcFile->open(QIODevice::ReadOnly | QIODevice::Text));
 }
 
 TMP36Driver::~TMP36Driver()
 {
+//    mAdcFile->close();
     delete mAdcFile;
 }
 
 bool TMP36Driver::getTemperature_C(float& temp)
 {
-    int rawAdc = 0;
-
-    // input is an integer, only read an integer in
-    Q_ASSERT(mAdcFile->open(QIODevice::ReadOnly | QIODevice::Text));
-    QByteArray input = mAdcFile->read(sizeof(rawAdc));
-    mAdcFile->close();
-
-    if (input.size() == 0) {
-        return false;
-    }
-
-    bool ok;
-
-    rawAdc = input.toInt(&ok);
-
-    if (!ok) {
-        return false;
-    }
+    int rawAdc;
+    SmartBox::readFile(mAdcFile, rawAdc);
 
     if (rawAdc > MAX_RAW_VALUE_OUTPUT || rawAdc < MIN_RAW_VALUE_OUTPUT) {
         return false;

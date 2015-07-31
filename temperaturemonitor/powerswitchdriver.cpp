@@ -1,9 +1,11 @@
 #include "powerswitchdriver.h"
+#include "utility.h"
 #include <QFile>
 #include <QString>
 #include <QByteArray>
 #include <QTextStream>
 #include <QDebug>
+
 
 PowerSwitchDriver::PowerSwitchDriver()
 {
@@ -13,10 +15,15 @@ PowerSwitchDriver::PowerSwitchDriver()
     // /home/root/bin/init_beaglebone.sh should create those files on start up
     Q_ASSERT(mGpioValueFile->exists());
     Q_ASSERT(mGpioDirectionFile->exists());
+
+
+//    Q_ASSERT(mGpioDirectionFile->open(QIODevice::ReadOnly | QIODevice::Text));
 }
 
 PowerSwitchDriver::~PowerSwitchDriver()
 {
+//    mGpioDirectionFile->close();
+
     delete mGpioDirectionFile;
     delete mGpioValueFile;
 }
@@ -52,21 +59,29 @@ bool PowerSwitchDriver::isPowerSwitchEnabled()
 
 void PowerSwitchDriver::switchPower(GPIO_Value_t value)
 {
-    QTextStream out(mGpioValueFile);
-    out << static_cast<int>(value);
+//    Q_ASSERT(mGpioValueFile->open(QIODevice::WriteOnly | QIODevice::Truncate));
+//    QTextStream out(mGpioValueFile);
+//    out << static_cast<int>(value);
+//    mGpioValueFile->close();
+    SmartBox::writeFile(mGpioValueFile, static_cast<int>(value));
 }
 
 PowerSwitchDriver::GPIO_Direction_t PowerSwitchDriver::getDirection()
 {
-    Q_ASSERT(mGpioDirectionFile->open(QIODevice::ReadWrite | QIODevice::Text));
-    QByteArray raw = mGpioDirectionFile->readLine();
-    mGpioDirectionFile->close();
-
-    if (raw.size() == 0) {
+    QString rawString;
+    if (! SmartBox::readFile(mGpioDirectionFile, rawString)) {
         return GPIO_Direction_t::UNKNOWN;
     }
 
-    QString rawString(raw.constData());
+    rawString = rawString.trimmed();
+//    QByteArray raw = mGpioDirectionFile->readLine();
+//    mGpioDirectionFile->close();
+
+//    if (raw.size() == 0) {
+//        return GPIO_Direction_t::UNKNOWN;
+//    }
+
+//    QString rawString = QString(raw.constData()).trimmed(); // trimmed /n at the end
     QString out(GPIO_DIRECTION_OUT);
     QString in(GPIO_DIRECTION_IN);
 
@@ -82,13 +97,23 @@ PowerSwitchDriver::GPIO_Direction_t PowerSwitchDriver::getDirection()
 
 PowerSwitchDriver::GPIO_Value_t PowerSwitchDriver::getValue()
 {
-    QByteArray raw = mGpioValueFile->readLine();
+//    // go to begining of the file
+//    mGpioValueFile->seek(0);
 
-    if (raw.size() == 0) {
+//    // 0 or 1
+//    QByteArray raw = mGpioValueFile->read(sizeof(char));
+//    qDebug()<<raw;
+
+//    if (raw.size() == 0) {
+//        return GPIO_Value_t::UNKNOWN;
+//    }
+
+//    int rawValue = raw.toInt();
+
+    int rawValue;
+    if (!SmartBox::readFile(mGpioValueFile, rawValue)) {
         return GPIO_Value_t::UNKNOWN;
     }
-
-    int rawValue = raw.toInt();
 
     if (rawValue > static_cast<int>(GPIO_Value_t::UNKNOWN) &&
             rawValue < static_cast<int>(GPIO_Value_t::COUNT)) {

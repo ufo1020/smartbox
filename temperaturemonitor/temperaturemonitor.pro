@@ -29,7 +29,8 @@ HEADERS += \
     tmp36driver.h \
     temperaturesensor.h \
     temperaturemonitor.h \
-    powerswitchdriver.h
+    powerswitchdriver.h \
+    utility.h
 
 # path for qhttpserver
 LIBS += -L$$OUT_PWD/../qhttpserver/lib
