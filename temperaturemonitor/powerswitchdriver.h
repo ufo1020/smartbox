@@ -24,7 +24,7 @@ private:
 
     enum class GPIO_Value_t
     {
-        UNKNOWN = 0,
+        UNKNOWN = -1,
         OFF,
         ON,
         COUNT

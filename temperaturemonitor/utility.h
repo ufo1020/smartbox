@@ -8,7 +8,7 @@ namespace SmartBox {
 
 template <class T> bool readFile(QFile* file, T& result)
 {
-    if (!file->exists() || !file->isReadable()){
+    if (!file->exists()){
         return false;
     }
 
@@ -28,7 +28,7 @@ template <class T> bool readFile(QFile* file, T& result)
 
 template <class T> bool writeFile(QFile* file, T input)
 {
-    if (!file->exists() || !file->isWritable()){
+    if (!file->exists()){
         return false;
     }
 
