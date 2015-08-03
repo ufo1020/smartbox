@@ -14,14 +14,14 @@ HttpService::HttpService() : mResponse(nullptr)
     mServer->listen(QHostAddress::Any, 8080);
 
     mGetExp = new QRegExp(QString(GET_URI));
-    mPostExp = new QRegExp(QString(POST_URI));
+    mSetExp = new QRegExp(QString(SET_URI));
 }
 
 HttpService::~HttpService()
 {
     delete mServer;
     delete mGetExp;
-    delete mPostExp;
+    delete mSetExp;
 }
 
 
@@ -33,17 +33,22 @@ void HttpService::handleRequest(QHttpRequest *req, QHttpResponse *resp)
         // get request
         emit getRequest();
 
-    } else if ( mPostExp->indexIn(req->path()) != REG_EXP_NOT_MATCH) {
-        // post request
-        QString temp = mPostExp->capturedTexts()[1];
-        bool ok;
-        int targetTemp = temp.toInt(&ok);
-        if (ok) {
-            emit postRequest(temp.toInt());
+    } else if ( mSetExp->indexIn(req->path()) != REG_EXP_NOT_MATCH) {
+        // post request has 2 types: xx(temp) or xx/xxxx(temp and time)
+        // mSetExp->capturedTexts() returns a list like:
+        // ("/set/22/2000", "22/2000")
+        QString input = mSetExp->capturedTexts()[1];
+        QStringList list = input.split("/");
+
+        QString temp = list[0];
+        if (list.length() > 1) {
+            // post request contains temp and time
+            QString time = list[1];
+            emit postRequest(temp, time);
         } else {
-            resp->writeHead(400);
-            resp->end(QByteArray("Target temperature is wrong!"));
+            emit postRequest(temp);
         }
+
     } else {
         resp->writeHead(403);
         resp->end(QByteArray("You aren't allowed here!"));
@@ -56,8 +61,8 @@ void HttpService::SendGetResponse(QString resp)
     mResponse->setHeader("Content-Type", "text/html");
     mResponse->writeHead(200);
 
-    QString body = tr("<html><head><title>Get Temperature</title></head><body><h1>%1!</h1></body></html>");
-    qDebug()<<"get responst:"<<body;
+    QString body = tr("<html><head><title>Get Temperature</title></head><body><h1>%1</h1></body></html>");
+//    qDebug()<<"get responst:"<<body;
     mResponse->end(body.arg(resp).toUtf8());
 }
 
@@ -67,8 +72,8 @@ void HttpService::SendPostResponse(QString resp)
     mResponse->setHeader("Content-Type", "text/html");
     mResponse->writeHead(200);
 
-    QString body = tr("<html><head><title>Post Temperature</title></head><body><h1>%1!</h1></body></html>");
+    QString body = tr("<html><head><title>Post Temperature</title></head><body><h1>%1</h1></body></html>");
     mResponse->end(body.arg(resp).toUtf8());
-    qDebug()<<"post responst:"<<body;
+//    qDebug()<<"post responst:"<<body;
 }
 

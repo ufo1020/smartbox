@@ -23,7 +23,9 @@ signals:
 private slots:
     void getTemperatureResult(float temp);
     void handleGetRequest();
-    void heandlePostRequest(int temp);
+    void heandlePostRequest(QString temp);
+    void heandlePostRequest(QString temp, QString time);
+    void setSchduledTemperature();
 
 private:
     void startUpdateTemperature();
@@ -36,6 +38,8 @@ private:
     HttpService* mHttpServer = nullptr;
     TemperatureMonitor* mTempMonitor = nullptr;
     QTimer* mTimer;
+
+    int mScheduledTemp = 0;
 };
 
 #endif // MAINCONTROLLER_H
