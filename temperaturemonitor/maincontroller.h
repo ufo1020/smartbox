@@ -5,6 +5,7 @@
 #include <QThread>
 
 class QTimer;
+class QTime;
 class HttpService;
 class TemperatureMonitor;
 
@@ -29,17 +30,22 @@ private slots:
 
 private:
     void startUpdateTemperature();
+    void startScheduledTimer(QTime& time);
 
     // timeout 60s
     constexpr static int TEMPERATURE_UPDATE_TIMEOUT_MS = 60000;
     constexpr static char* INVALID_TEMPERATURE = "FF";
+
+    // default start heating at 7:10:)
+    constexpr static char* DEFAULT_TIME = "0703";
+    constexpr static int MILLISECONDS_A_DAY = 86400000;
 
     QThread mMoniorThread; // thread running temperature monitor
     HttpService* mHttpServer = nullptr;
     TemperatureMonitor* mTempMonitor = nullptr;
     QTimer* mTimer;
 
-    int mScheduledTemp = 0;
+    int mScheduledTemp = 20;
 };
 
 #endif // MAINCONTROLLER_H

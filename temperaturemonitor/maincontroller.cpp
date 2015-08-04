@@ -11,6 +11,7 @@ MainController::MainController()
     mTempMonitor = new TemperatureMonitor();
     mTimer = new QTimer();
 
+
     mTempMonitor->moveToThread(&mMoniorThread);
 
     // network events
@@ -32,7 +33,8 @@ MainController::MainController()
     connect(mTimer, SIGNAL(timeout()), mTempMonitor, SLOT(updateTemperature()));
     mTimer->start(TEMPERATURE_UPDATE_TIMEOUT_MS);
 
-    qDebug()<<"main controller started";
+    QTime time = QTime::fromString(QString(DEFAULT_TIME), "hhmm");
+    startScheduledTimer(time);
 }
 
 MainController::~MainController()
@@ -75,14 +77,22 @@ void MainController::heandlePostRequest(QString temp, QString time)
         qDebug()<<"input time not valid!!!";
         return;
     }
+    startScheduledTimer(scheduledTime);
+    mHttpServer->SendPostResponse(temp);
+}
+
+void MainController::startScheduledTimer(QTime& time)
+{
     QTime currentTime = QTime::currentTime();
-    int leftTime_ms = currentTime.msecsTo(scheduledTime);
+    int leftTime_ms = currentTime.msecsTo(time);
     // always use postive numbers, means looking for futurn time
     // for example current 20:00, scheduled 8:00, result -12
+    if (leftTime_ms < 0) {
+        // need to always make time to future
+        leftTime_ms = MILLISECONDS_A_DAY + leftTime_ms;
+    }
     qDebug()<<"left "<<leftTime_ms/1000<<"s";
-    QTimer::singleShot(abs(leftTime_ms), this,SLOT(setSchduledTemperature()));
-
-    mHttpServer->SendPostResponse(temp);
+    QTimer::singleShot((leftTime_ms), this,SLOT(setSchduledTemperature()));
 }
 
 void MainController::setSchduledTemperature()
