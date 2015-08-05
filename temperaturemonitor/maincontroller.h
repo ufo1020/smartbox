@@ -5,7 +5,6 @@
 #include <QThread>
 
 class QTimer;
-class QTime;
 class HttpService;
 class TemperatureMonitor;
 
@@ -24,13 +23,13 @@ signals:
 private slots:
     void getTemperatureResult(float temp);
     void handleGetRequest();
-    void heandlePostRequest(QString temp);
-    void heandlePostRequest(QString temp, QString time);
+    void handlePostRequest(QString temp);
+    void handlePostRequest(QString temp, QString time);
     void setSchduledTemperature();
 
 private:
     void startUpdateTemperature();
-    void startScheduledTimer(QTime& time);
+    void startScheduledTimer();
 
     // timeout 60s
     constexpr static int TEMPERATURE_UPDATE_TIMEOUT_MS = 60000;
@@ -44,6 +43,7 @@ private:
     HttpService* mHttpServer = nullptr;
     TemperatureMonitor* mTempMonitor = nullptr;
     QTimer* mTimer;
+    QString mSchduledTime;
 
     int mScheduledTemp = 20;
 };

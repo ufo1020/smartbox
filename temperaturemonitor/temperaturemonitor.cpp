@@ -53,11 +53,14 @@ void TemperatureMonitor::setTemperature(int temp)
 void TemperatureMonitor::updateTemperature()
 {
     if (mSensor->getTemperature_C(mCurrentTemperature)) {
-        if (mTargetTemperature &&
-            static_cast<int>(mCurrentTemperature) - mTargetTemperature > MIN_DELTA_TEMPERATURE ) {
-            // temperature reached, stop ramping
-            mSwitch->switchOffPower();
-            return;
+        //qDebug()<<mCurrentTemperature;
+        if (mTargetTemperature) {
+            if (static_cast<int>(mCurrentTemperature) - mTargetTemperature > MIN_DELTA_TEMPERATURE ) {
+                // temperature reached, stop ramping
+                stopRamping();
+            } else {
+                startRamping();
+            }
         }
     }
 }
@@ -77,5 +80,5 @@ void TemperatureMonitor::stopRamping()
 
 bool TemperatureMonitor::isValidTemperature_C(float temp)
 {
-    mSensor->isValidTemperature_C(temp);
+    return mSensor->isValidTemperature_C(temp);
 }
