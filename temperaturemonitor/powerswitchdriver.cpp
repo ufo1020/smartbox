@@ -69,7 +69,7 @@ PowerSwitchDriver::GPIO_Direction_t PowerSwitchDriver::getDirection()
     QString out(GPIO_DIRECTION_OUT);
     QString in(GPIO_DIRECTION_IN);
 
-    qDebug()<<"Reading is: "<<rawString;
+    //qDebug()<<"Reading is: "<<rawString;
     if (rawString == out) {
         return GPIO_Direction_t::OUT;
     } else if (rawString == in) {
@@ -86,6 +86,7 @@ PowerSwitchDriver::GPIO_Value_t PowerSwitchDriver::getValue()
         return GPIO_Value_t::UNKNOWN;
     }
 
+    qDebug()<<"value is: "<<rawValue;
     if (rawValue > static_cast<int>(GPIO_Value_t::UNKNOWN) &&
             rawValue < static_cast<int>(GPIO_Value_t::COUNT)) {
         return static_cast<GPIO_Value_t>(rawValue);

@@ -62,7 +62,7 @@ void HttpService::SendGetResponse(QString resp)
     mResponse->writeHead(200);
 
     QString body = tr("<html><head><title>Get Temperature</title></head><body><h1>%1</h1></body></html>");
-//    qDebug()<<"get responst:"<<body;
+    qDebug()<<"get responst:"<<body;
     mResponse->end(body.arg(resp).toUtf8());
 }
 
@@ -74,6 +74,6 @@ void HttpService::SendPostResponse(QString resp)
 
     QString body = tr("<html><head><title>Post Temperature</title></head><body><h1>%1</h1></body></html>");
     mResponse->end(body.arg(resp).toUtf8());
-//    qDebug()<<"post responst:"<<body;
+    qDebug()<<"post responst:"<<body;
 }
 

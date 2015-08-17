@@ -17,7 +17,7 @@ public:
 
 private:
     const static int SENSOR_FAULTY_LIMIT = 3;
-    constexpr static float MAX_TEMPERATURE = 30.0f;
+    constexpr static float MAX_TEMPERATURE = 30.1f;
     constexpr static float MIN_TEMPERATURE = 0.0f;
 
     TMP36Driver* mTmp36;

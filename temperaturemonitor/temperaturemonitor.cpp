@@ -39,26 +39,30 @@ void TemperatureMonitor::setTemperature(int temp)
         return;
     }
 
-    if (currentTemp > temp || abs(currentTemp - temp) < MIN_DELTA_TEMPERATURE) {
-        stopRamping();
-        return;
-    }
+    qDebug()<<"target temp:"<<temp;
+    mTargetTemperature = static_cast<float>(temp);
 
-    mTargetTemperature = temp;
+//    if (currentTemp > temp || abs(currentTemp - temp) < MIN_DELTA_TEMPERATURE) {
+//        stopRamping();
+//        return;
+//    }
+//    qDebug()<<"target temp:"<<temp;
+//    mTargetTemperature = static_cast<float>(temp);
 
-    // target larger than current, start ramping
-    startRamping();
+//    // target larger than current, start ramping
+//    startRamping();
+    updateTemperature();
 }
 
 void TemperatureMonitor::updateTemperature()
 {
     if (mSensor->getTemperature_C(mCurrentTemperature)) {
-        //qDebug()<<mCurrentTemperature;
-        if (mTargetTemperature) {
-            if (static_cast<int>(mCurrentTemperature) - mTargetTemperature > MIN_DELTA_TEMPERATURE ) {
+        qDebug()<<mCurrentTemperature;
+        if (mTargetTemperature > 0.0f) {
+            if ((mCurrentTemperature - mTargetTemperature) > MIN_DELTA_TEMPERATURE) {
                 // temperature reached, stop ramping
-                stopRamping();
-            } else {
+                stopRamping();            
+            } else if (mTargetTemperature - mCurrentTemperature > MIN_DELTA_TEMPERATURE) {
                 startRamping();
             }
         }
@@ -67,15 +71,19 @@ void TemperatureMonitor::updateTemperature()
 
 void TemperatureMonitor::startRamping()
 {
-    qDebug() << "Turn on power";
-    mSwitch->switchOnPower();
+    if (!mSwitch->isPowerOn()) {
+        qDebug() << "Turn on power";
+        mSwitch->switchOnPower();
+    }
 }
 
 void TemperatureMonitor::stopRamping()
 {
-    qDebug() << "Turn off power"; 
-    // just turn it off, no state checking needed
-    mSwitch->switchOffPower();
+    if (mSwitch->isPowerOn()) {
+        qDebug() << "Turn off power"; 
+        // just turn it off, no state checking needed
+        mSwitch->switchOffPower();
+    }
 }
 
 bool TemperatureMonitor::isValidTemperature_C(float temp)

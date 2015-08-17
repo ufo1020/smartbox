@@ -30,7 +30,7 @@ private:
 
 
     constexpr static int MIN_DELTA_TEMPERATURE = 2;
-    int mTargetTemperature = 0;
+    float mTargetTemperature = 0.0f;
     float mCurrentTemperature = 0.0f;
 
     TemperatureSensor* mSensor;
